@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 
 export default function CreateProductModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -22,7 +23,9 @@ export default function CreateProductModal() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -33,8 +36,20 @@ export default function CreateProductModal() {
     setForm((prev) => ({ ...prev, files: file }));
   };
 
+  const isFormValid =
+    form.name.trim() &&
+    form.description.trim() &&
+    form.price.trim() &&
+    form.category.trim() &&
+    form.brand.trim() &&
+    form.stock.trim() &&
+    form.isActive &&
+    form.files;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const formData = new FormData();
     Object.entries(form).forEach(([key, value]) => {
       if (value !== null) {
@@ -43,18 +58,20 @@ export default function CreateProductModal() {
     });
 
     try {
-      const res = await fetch("https://authentication-microservice-6cyp.onrender.com/api/products/create",{
-        method: "POST",
-        body: formData,
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      const res = await fetch(
+        "https://authentication-microservice-6cyp.onrender.com/api/products/create",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
 
       if (!res.ok) throw new Error("Failed");
 
-      alert("Product created successfully!");
-      toast.success("Product created!");
+      toast.success("✅ Product created!");
       setIsOpen(false);
       setForm({
         name: "",
@@ -67,9 +84,12 @@ export default function CreateProductModal() {
         files: null,
       });
     } catch (err) {
-      toast.error("Failed to create product");
+      toast.error("❌ Failed to create product");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
     <div>
       <Button onClick={() => setIsOpen(true)} className="bg-pink-600 text-white">
@@ -105,11 +125,22 @@ export default function CreateProductModal() {
               <Input type="file" accept="image/*" onChange={handleFileChange} required />
 
               <div className="flex justify-end gap-3">
-                <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsOpen(false)}
+                  disabled={isSubmitting}
+                >
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-green-600 text-white hover:bg-green-700">
-                  Submit
+                <Button
+                  type="submit"
+                  className={`bg-green-600 text-white hover:bg-green-700 transition-all duration-300 ${
+                    !isFormValid || isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                  disabled={!isFormValid || isSubmitting}
+                >
+                  {isSubmitting ? "Creating..." : "Submit"}
                 </Button>
               </div>
             </form>
