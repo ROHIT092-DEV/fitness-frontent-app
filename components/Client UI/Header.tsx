@@ -2,7 +2,7 @@
 
 import { useContext, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Dumbbell, Grid2X2, File, Box, Mail } from "lucide-react";
+import { Menu, X, Dumbbell, Grid2X2, File, Box, Mail, User } from "lucide-react";
 import Link from "next/link";
 import { AuthContext } from "@/context/AuthContext";
 
@@ -17,8 +17,8 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-white/95 dark:bg-gray-900 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
@@ -60,12 +60,12 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors flex items-center gap-1"
               >
                 {item.icon}
                 {item.label}
@@ -74,17 +74,29 @@ export function Header() {
           </nav>
 
           {/* Right Side */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center gap-4">
             {user && user.role === "admin" && (
-              <Link href="/admin" className="flex items-center space-x-2 bg-gradient-to-b from-pink-100 to-pink-200 px-3 py-2 rounded">
+              <Link
+                href="/admin"
+                className="flex items-center gap-2 bg-gradient-to-b from-pink-500 to-pink-600 text-white px-3 py-2 rounded-md text-sm shadow-md hover:shadow-lg transition"
+              >
                 <File className="w-4 h-4" />
-                <span className="text-sm">Dashboard</span>
+                Dashboard
               </Link>
             )}
             {user ? (
-              <span className="text-sm font-medium text-primary bg-pink-200 px-4 py-1 rounded">
-                {user.firstName}
-              </span>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200 px-3 py-1 border border-gray-300 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 shadow-sm">
+                  <User className="w-4 h-4 text-pink-600" />
+                  <span className="capitalize">{user.firstName}</span>
+                </div>
+                <button
+                  onClick={logout}
+                  className="px-4 py-2 rounded-md text-sm font-medium text-white bg-red-500 hover:bg-red-600 transition shadow-md"
+                >
+                  Logout
+                </button>
+              </div>
             ) : (
               <Link href="/login">
                 <Button variant="outline" size="sm">Login</Button>
@@ -102,33 +114,36 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden px-2 pt-4 pb-4 space-y-2 border-t border-border">
+          <div className="md:hidden px-2 pt-4 pb-4 space-y-3 border-t border-border">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsOpen(false)}
-                className="block py-3 px-4 text-base font-medium hover:bg-muted hover:text-primary transition-colors bg-gray-200 rounded flex items-center"
+                className="block py-3 px-4 text-base font-medium hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary transition-colors bg-gray-200 dark:bg-gray-700 rounded flex items-center"
               >
                 {item.icon}
                 <span className="ml-3">{item.label}</span>
               </Link>
             ))}
-            <div className="mt-4 space-y-2">
+            <div className="mt-4 space-y-3">
               {user && user.role === "admin" && (
                 <Link
                   href="/admin"
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center space-x-2 bg-pink-100 px-4 py-2 rounded"
+                  className="flex items-center gap-2 bg-pink-100 dark:bg-pink-900 px-4 py-2 rounded text-pink-800 dark:text-pink-100"
                 >
                   <File className="w-4 h-4" />
                   <span className="text-sm">Dashboard</span>
                 </Link>
               )}
               {user ? (
-                <div className="flex justify-between items-center bg-yellow-100 px-4 py-2 rounded">
-                  <span className="text-sm font-medium">{user.firstName}</span>
-                  <button className="text-sm text-red-600" onClick={logout}>Logout Button</button>
+                <div className="flex items-center justify-between bg-yellow-50 dark:bg-yellow-900 px-4 py-2 rounded">
+                  <div className="flex items-center gap-2 text-sm font-medium text-gray-800 dark:text-yellow-100">
+                    <User className="w-4 h-4" />
+                    <span className="capitalize">{user.firstName}</span>
+                  </div>
+                  <button className="text-sm px-3 py-1 bg-red-500 hover:bg-red-600 text-white rounded-md shadow-sm" onClick={logout}>Logout</button>
                 </div>
               ) : (
                 <Link href="/login" onClick={() => setIsOpen(false)}>

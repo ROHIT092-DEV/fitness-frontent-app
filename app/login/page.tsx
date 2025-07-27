@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 import { useState, useContext } from "react";
+import { useRouter } from "next/navigation";
 import { AuthContext } from "@/context/AuthContext";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-function Login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -41,64 +41,55 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-rose-100 to-amber-100 flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 p-8 rounded-3xl shadow-xl border border-pink-200 dark:border-gray-700 transition-all">
-        <h1 className="text-3xl font-bold text-center text-pink-600 dark:text-white mb-6">
-          Welcome Back 💖
-        </h1>
-        <p className="text-center text-sm text-gray-500 mb-6 dark:text-gray-400">
-          Please login to continue to your dashboard
-        </p>
+    <div className="min-h-screen bg-gray-100 px-6 py-10 flex justify-center">
+      <div className="flex flex-col lg:flex-row items-start w-full max-w-6xl gap-10">
+        {/* Left side branding */}
+        <div className="w-full lg:w-1/2">
+          <h1 className="text-5xl font-bold text-blue-600 mb-4">MyGYM</h1>
+          <p className="text-xl text-gray-700">
+            Track your workouts, manage your goals, and stay motivated every day with your GYM dashboard.
+          </p>
+        </div>
 
-        <form onSubmit={handleUserLogin} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Email
-            </label>
+        {/* Right side form */}
+        <div className="w-full lg:w-1/2 bg-white shadow-md rounded-xl p-8">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Login to your account</h2>
+
+          <form onSubmit={handleUserLogin} className="space-y-4">
             <Input
               type="email"
-              required
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full bg-pink-50 focus:ring-2 focus:ring-pink-400 dark:bg-gray-800 dark:focus:ring-pink-500"
+              className="bg-gray-100 border border-gray-300 text-sm focus:ring-1 focus:ring-blue-500"
+              required
             />
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Password
-            </label>
             <Input
               type="password"
-              required
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full bg-pink-50 focus:ring-2 focus:ring-pink-400 dark:bg-gray-800 dark:focus:ring-pink-500"
+              className="bg-gray-100 border border-gray-300 text-sm focus:ring-1 focus:ring-blue-500"
+              required
             />
+
+            <Button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 rounded-md"
+            >
+              Log In
+            </Button>
+          </form>
+
+          <div className="mt-4 text-sm text-center">
+            Don't have an account?{" "}
+            <a href="/register" className="text-blue-600 hover:underline">
+              Register here
+            </a>
           </div>
-
-          <Button
-            type="submit"
-            className="w-full bg-pink-500 hover:bg-pink-600 transition-all duration-200 text-white font-semibold py-2 rounded-xl"
-          >
-            Log In
-          </Button>
-        </form>
-
-        <p className="text-sm text-center mt-6 text-gray-600 dark:text-gray-300">
-            You should have an account if not
-          <a
-            href="/register"
-            className="text-pink-600 font-medium hover:underline"
-          >
-            Register here
-          </a>
-        </p>
+        </div>
       </div>
     </div>
   );
 }
-
-export default Login;
