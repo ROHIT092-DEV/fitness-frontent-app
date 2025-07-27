@@ -9,29 +9,55 @@ function Register() {
   const [address, setAddress] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const [dateOfBirth, setDateOfBirth] = React.useState("");
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const isFormInvalid =
+    !firstName ||
+    !lastName ||
+    !email ||
+    !password ||
+    !address ||
+    !phoneNumber ||
+    !dateOfBirth ||
+    phoneNumber.length !== 10;
 
   const handleRegisterUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firstName || !lastName || !email || !password || !address || !phoneNumber) {
-      alert("Please fill in all fields");
+
+    if (isFormInvalid) {
+      alert("Please fill in all fields correctly.");
       return;
     }
 
-    const res = await fetch("https://authentication-microservice-6cyp.onrender.com/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName, lastName, email, password, address, phoneNumber, dateOfBirth }),
-    });
+    setIsLoading(true);
+    try {
+      const res = await fetch("https://authentication-microservice-6cyp.onrender.com/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+          address,
+          phoneNumber, // ✅ No +91 prefix here
+          dateOfBirth,
+        }),
+      });
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      alert(`Registration failed: ${errorData.message}`);
-      return;
+      if (!res.ok) {
+        const errorData = await res.json();
+        alert(`Registration failed: ${errorData.message}`);
+        return;
+      }
+
+      alert("Registration successful! Please login to continue.");
+      window.location.href = "/login";
+    } catch (error) {
+      alert("Something went wrong. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
-
-    const data = await res.json();
-    alert("Registration successful! Please login to continue.");
-    window.location.href = "/login";
   };
 
   return (
@@ -49,64 +75,85 @@ function Register() {
             <input
               type="text"
               placeholder="First Name"
-              required
+              value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
             <input
               type="text"
               placeholder="Last Name"
-              required
+              value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
           <input
             type="email"
             placeholder="Email Address"
-            required
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
 
           <input
             type="password"
             placeholder="Password"
-            required
+            value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
 
           <input
             type="text"
             placeholder="Address"
-            required
+            value={address}
             onChange={(e) => setAddress(e.target.value)}
-            className="w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
           />
 
           <div className="flex flex-col md:flex-row gap-4">
-            <input
-              type="tel"
-              placeholder="Phone Number"
-              required
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            <div className="relative flex-1">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">+91</span>
+              <input
+                type="tel"
+                placeholder="Phone Number"
+                value={phoneNumber}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (/^\d{0,10}$/.test(val)) {
+                    setPhoneNumber(val);
+                  }
+                }}
+                className="w-full pl-12 pr-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
             <input
               type="date"
-              required
+              value={dateOfBirth}
               onChange={(e) => setDateOfBirth(e.target.value)}
-              className="flex-1 px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-4 py-2 rounded-md border bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-200 shadow-md"
+            disabled={isFormInvalid || isLoading}
+            className={`w-full py-3 font-semibold rounded-md transition duration-200 shadow-md ${
+              isFormInvalid || isLoading
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            }`}
           >
-            Register
+            {isLoading ? "Creating Account..." : "Register"}
           </button>
         </form>
       </div>
