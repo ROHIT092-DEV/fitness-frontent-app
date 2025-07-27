@@ -88,7 +88,7 @@ function Login() {
         </form>
 
         <p className="text-sm text-center mt-6 text-gray-600 dark:text-gray-300">
-          Don not  have an account?{" "}
+            You should have an account if not
           <a
             href="/register"
             className="text-pink-600 font-medium hover:underline"
