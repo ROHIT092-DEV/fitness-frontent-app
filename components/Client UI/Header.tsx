@@ -8,7 +8,7 @@ import { AuthContext } from "@/context/AuthContext";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
 
   const navItems = [
     { href: "/product", label: "Product", icon: <Box className="h-4 w-4" /> },
@@ -128,7 +128,7 @@ export function Header() {
               {user ? (
                 <div className="flex justify-between items-center bg-yellow-100 px-4 py-2 rounded">
                   <span className="text-sm font-medium">{user.firstName}</span>
-                  <button className="text-sm text-red-600">Logout</button>
+                  <button className="text-sm text-red-600" onClick={logout}>Logout</button>
                 </div>
               ) : (
                 <Link href="/login" onClick={() => setIsOpen(false)}>
