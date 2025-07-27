@@ -44,7 +44,7 @@ export default function Landing() {
               <User className="text-pink-500 w-8 h-8 mb-4" />
               <h3 className="text-xl font-semibold mb-2">Personalized Plans</h3>
               <p className="text-gray-600 dark:text-gray-400">
-                Whether you're a beginner or a pro, we design your workout to fit your goals.
+                Whether you are a beginner or a pro, we design your workout to fit your goals.
               </p>
             </div>
 
