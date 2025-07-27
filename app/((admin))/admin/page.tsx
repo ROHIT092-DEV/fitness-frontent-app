@@ -1,5 +1,7 @@
 'use client'
 import { AuthContext } from "@/context/AuthContext";
+import { File, Home, MenuIcon } from "lucide-react";
+import Link from "next/link";
 import { useContext } from "react"
 
 
@@ -17,9 +19,8 @@ function Admin() {
 
 
   return (
-    <div>
-      Admin Page
-    </div>
+  
+    <></>
   )
 }
 
