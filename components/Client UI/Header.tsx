@@ -128,7 +128,7 @@ export function Header() {
               {user ? (
                 <div className="flex justify-between items-center bg-yellow-100 px-4 py-2 rounded">
                   <span className="text-sm font-medium">{user.firstName}</span>
-                  <button className="text-sm text-red-600" onClick={logout}>Logout</button>
+                  <button className="text-sm text-red-600" onClick={logout}>Logout Button</button>
                 </div>
               ) : (
                 <Link href="/login" onClick={() => setIsOpen(false)}>

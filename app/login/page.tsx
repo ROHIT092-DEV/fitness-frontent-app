@@ -88,7 +88,7 @@ function Login() {
         </form>
 
         <p className="text-sm text-center mt-6 text-gray-600 dark:text-gray-300">
-          Don't have an account?{" "}
+          Don not  have an account?{" "}
           <a
             href="/register"
             className="text-pink-600 font-medium hover:underline"
